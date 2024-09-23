@@ -1,0 +1,150 @@
+@import url(./reset.css);
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100..900&display=swap');
+
+:root {
+  --color-primary: #0d6efd;
+  --color-secondary: #eb1946;
+  --color-light-grey: #f2f2f2;
+  --color-dark-grey: #6c757d;
+  --color-dark-text: #141432;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Jost', sans-serif;
+}
+
+.header,
+.menu,
+.menu ul,
+.search,
+main,
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  padding: 10px;
+  background-color: var(--color-light-grey);
+}
+
+.menu {
+  flex-flow: column wrap;
+}
+
+.menu h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-dark-text);
+}
+
+.menu ul {
+  margin: 15px 0;
+  flex-flow: row, nowrap;
+}
+
+.menu ul li {
+  margin: 0 10px;
+  text-align: center;
+}
+
+.menu ul li a {
+  padding: 5px 10px;
+  font-weight: 600;
+  color: var(--color-dark-text);
+  text-decoration: none;
+  border: solid 2px var(--color-primary);
+  border-radius: 5px;
+  transition: all 0.15s ease;
+}
+
+.menu ul li a:hover,
+.menu ul li a.active {
+  color: #fff;
+  background-color: var(--color-primary);
+}
+
+.search {
+  margin: 50px auto 30px auto;
+}
+
+.search input {
+  width: 300px;
+  padding: 5px;
+  margin: 0 10px 0 15px;
+  font-family: 'Jost', sans-serif;
+  text-align: center;
+  border: solid 1px var(--color-dark-grey);
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.search-button:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+
+}
+
+main {
+  width: 80%;
+  margin: 0 auto;
+  flex-flow: column nowrap;
+}
+
+.control {
+  margin: 0 0 15px auto;
+}
+
+.control-button {
+  padding: 5px 10px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+main table th {
+  font-weight: 600;
+}
+
+main table th,
+main table td {
+  text-align: center;
+  color: var(--color-dark-text);
+}
+
+.plate-cell:hover {
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.action-button {
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.actions i:nth-child(1) {
+  color: var(--color-primary);
+}
+
+.actions i:nth-child(2) {
+  color: var(--color-secondary);
+}
+
+.table-alert {
+  width: 100%;
+  text-align: center;
+}
+
+.invisible {
+  display: none; 
+}
