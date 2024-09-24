@@ -1,2 +1,10 @@
 @import url(./global.css);
 
+.plate-button {
+  border: none;
+  background-color: transparent;
+}
+
+.plate-button:hover {
+  color: var(--color-primary);
+}

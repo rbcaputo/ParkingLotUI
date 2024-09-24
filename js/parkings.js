@@ -13,9 +13,13 @@ function printAllParkings(data) {
   data.forEach(el => {
     const row = document.createElement('tr');
     const plateCell = document.createElement('td');
-    plateCell.id = 'plate';
-    plateCell.classList.add('plate-cell');
-    plateCell.textContent = formatLicensePlate(el.vehicle.licensePlate);
+    const plateButton = document.createElement('button');
+    plateButton.id = 'plate-button';
+    plateButton.classList.add('plate-button');
+    plateButton.setAttribute('data-bs-toggle', 'modal');
+    plateButton.setAttribute('data-bs-target', '#infoModal');
+    plateButton.textContent = formatLicensePlate(el.vehicle.licensePlate);
+    plateCell.appendChild(plateButton);
     row.appendChild(plateCell);
 
     fields.forEach(field => {
@@ -39,3 +43,4 @@ function printAllParkings(data) {
     alert.classList.remove('invisible');
   }
 })();
+

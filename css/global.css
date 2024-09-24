@@ -51,7 +51,7 @@ main,
   text-align: center;
 }
 
-.menu ul li a {
+.navlink {
   padding: 5px 10px;
   font-weight: 600;
   color: var(--color-dark-text);
@@ -61,8 +61,8 @@ main,
   transition: all 0.15s ease;
 }
 
-.menu ul li a:hover,
-.menu ul li a.active {
+.navlink:hover,
+.active {
   color: #fff;
   background-color: var(--color-primary);
 }
@@ -112,6 +112,10 @@ main {
   border-radius: 5px;
 }
 
+.add {
+  background-color: #30d14e;
+}
+
 main table th {
   font-weight: 600;
 }
@@ -120,11 +124,6 @@ main table th,
 main table td {
   text-align: center;
   color: var(--color-dark-text);
-}
-
-.plate-cell:hover {
-  color: var(--color-primary);
-  cursor: pointer;
 }
 
 .action-button {

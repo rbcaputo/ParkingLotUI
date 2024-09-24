@@ -39,14 +39,14 @@
 			<button id="refresh" class="control-button">
 				<i class="fa-solid fa-arrow-rotate-right"></i>
 			</button>
-			<button id="add" class="control-button" data-bs-toggle="modal" data-bs-target="#addModal">
+			<button id="add" class="control-button add" data-bs-toggle="modal" data-bs-target="#addModal">
 				<i class="fa-solid fa-plus"></i>
 			</button>
 		</div>
 
-		<!-- Modal: Add new start  -->
+		<!-- Modal: Add new parking session start  -->
 		<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
+			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h1 class="modal-title fs-5" id="addModalLabel"> ADD NEW PARKING SESSION </h1>
@@ -62,12 +62,12 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-						<button type="submit" class="btn btn-primary"> Save </button>
+						<button type="button" class="btn btn-primary"> Save </button>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- Modal: Add new end -->
+		<!-- Modal: Add new parking session end -->
 
 		<table class="table table-striped table-hover">
 			<thead>
@@ -84,11 +84,31 @@
 				<!-- Inner html content loaded dynamically through script. -->
 			</tbody>
 		</table>
-		
+
 		<div id="alert" class="table-alert invisible alert alert-warning" role="alert">
 			There are no parking entries registered.
 		</div>
-		
+
+		<!-- Modal: Vehicle data start  -->
+		<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="addModalLabel"> VEHICLE INFORMATION </h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						...
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
+						<button type="button" class="btn btn-primary"> Ok </button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal: Vehicle data end -->
+
 	</main>
 </body>
 

@@ -1,20 +1,43 @@
 const ENDPOINT = 'http://localhost:5269';
 
-(async function fetchMenu() {
-	const menu = document.querySelector('#menu');
+function handleLinkActiveState() {
+  const links = document.querySelectorAll('.navlink');
 
-	try {
-		const response = await fetch('../html/menu.html')
+  links.forEach(el => {
+    el.addEventListener('click', ev => {
+      links.forEach(el => el.classList.remove('active'));
+      ev.target.classList.add('active');
+      sessionStorage.setItem('activeLink', ev.target.id);
+    });
+  });
 
-		if (!response.ok)
-			throw new Error(`The request to load module "menu" could not be completed: status ${response.status}.`);
+  const activeLinkId = sessionStorage.getItem('activeLink');
 
-		menu.innerHTML = await response.text();
-	}
-	catch (er) {
-		console.error(er.message)
-	}
-})();
+  if (activeLinkId) {
+    const activeLink = document.querySelector(`#${activeLinkId}`);
+
+    if (activeLink)
+      activeLink.classList.add('active');
+  }
+}
+
+async function getMenu() {
+  const menu = document.querySelector('#menu');
+
+  try {
+    const response = await fetch('../html/menu.html')
+
+    if (!response.ok)
+      throw new Error(`Http error: status ${response.status}.`);
+
+    menu.innerHTML = await response.text();
+
+    handleLinkActiveState();
+  }
+  catch (er) {
+    console.error('Error while retrieving menu module:', er.message);
+  }
+}
 
 async function getAllData(resource) {
   try {
@@ -52,3 +75,8 @@ function createActionsCell() {
 
 const control = document.querySelectorAll(".control-button");
 const actions = document.querySelectorAll(".action-button");
+
+
+(async function init() {
+  await getMenu();
+})();
