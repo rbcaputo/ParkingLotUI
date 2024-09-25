@@ -17,26 +17,27 @@
 
   <link href="../css/style.css" rel="stylesheet">
   <script defer src="../js/global.js"></script>
+	<script defer src="../js/utils.js"></script>
 </head>
 
 <body>
-  <header id="menu" class="header">
+  <header class="header" id="menu">
     <!-- Inner html content loaded dynamically through script. -->
   </header>
 
   <div class="search">
-    <input id="search-input" type="text">
-    <div id="search-button-parkings" class="search-button">
+    <input type="text" id="search-input">
+    <div class="search-button" id="search-button-parkings">
       <i class="fa-solid fa-magnifying-glass"></i>
     </div>
   </div>
 
   <main class="main">
     <div class="control">
-      <button id="refresh" class="control-button">
+      <button class="control-button" id="refresh">
         <i class="fa-solid fa-arrow-rotate-right"></i>
       </button>
-      <button id="add" class="control-button">
+      <button class="control-button" id="add">
         <i class="fa-solid fa-plus"></i>
       </button>
     </div>
@@ -52,12 +53,12 @@
           <th scope="col"> Actions </th>
         </tr>
       </thead>
-      <tbody id="table" class="table-group-divider">
+      <tbody class="table-group-divider" id="table">
         <!-- Inner html content loaded dynamically through script. -->
       </tbody>
     </table>
 
-    <div id="alert" class="table-alert invisible alert alert-warning" role="alert">
+    <div class="table-alert invisible alert alert-warning" id="alert" role="alert">
       There are no vehicle entries registered.
     </div>
 

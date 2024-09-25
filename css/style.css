@@ -8,3 +8,11 @@
 .plate-button:hover {
   color: var(--color-primary);
 }
+
+.vehicle-info {
+  margin: auto;
+}
+
+.add-input {
+  text-align: center;
+}

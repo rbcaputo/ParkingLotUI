@@ -22,29 +22,29 @@
 </head>
 
 <body>
-	<header id="menu" class="header">
+	<header class="header" id="menu">
 		<!-- Inner html content loaded dynamically through script. -->
 	</header>
 
 	<div class="search">
 		<label for="search-input"> Search </label>
-		<input id="search-input" type="text" placeholder="License plate">
-		<div id="search-button-parkings" class="search-button">
+		<input type="text" class="form-control" id="search-input" placeholder="License plate">
+		<div class="search-button" id="search-button-parkings">
 			<i class="fa-solid fa-magnifying-glass"></i>
 		</div>
 	</div>
 
 	<main>
 		<div class="control">
-			<button id="refresh" class="control-button">
+			<button class="control-button" id="refresh">
 				<i class="fa-solid fa-arrow-rotate-right"></i>
 			</button>
-			<button id="add" class="control-button add" data-bs-toggle="modal" data-bs-target="#addModal">
+			<button class="control-button add" id="add" data-bs-toggle="modal" data-bs-target="#addModal">
 				<i class="fa-solid fa-plus"></i>
 			</button>
 		</div>
 
-		<!-- Modal: Add new parking session start  -->
+		<!-- Modal: Add new parking session start. -->
 		<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
@@ -54,20 +54,20 @@
 					</div>
 					<div class="modal-body">
 						<form>
-							<label for="plate-input"> License Plate </label>
-							<input id="plate-input" class="form-input" type="text" placeholder="abc1234">
-							<label for="entry-input"> Entry Time </label>
-							<input id="entry-input" class="form-input" type="text" placeholder="placeholder">
+							<div class="mb-3">
+								<label for="plate-input" class="form-label"> License Plate </label>
+								<input type="text" id="plate-input" class="form-control add-input" placeholder="License plate">
+							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-						<button type="button" class="btn btn-primary"> Save </button>
+						<button type="submit" class="btn btn-primary" id="submit"> Add </button>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- Modal: Add new parking session end -->
+		<!-- Modal: Add new parking session end. -->
 
 		<table class="table table-striped table-hover">
 			<thead>
@@ -85,11 +85,11 @@
 			</tbody>
 		</table>
 
-		<div id="alert" class="table-alert invisible alert alert-warning" role="alert">
+		<div class="table-alert invisible alert alert-warning" id="alert" role="alert">
 			There are no parking entries registered.
 		</div>
 
-		<!-- Modal: Vehicle data start  -->
+		<!-- Modal: Vehicle info start. -->
 		<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
@@ -97,19 +97,23 @@
 						<h1 class="modal-title fs-5" id="addModalLabel"> VEHICLE INFORMATION </h1>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<div class="modal-body">
-						...
+					<div class="modal-body" id="vehicle-info">
+						<div class="card vehicle-info" id="vehicle-body" style="width: 18rem;">
+							<!-- Inner html content loaded dynamically through script. -->
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
-						<button type="button" class="btn btn-primary"> Ok </button>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- Modal: Vehicle data end -->
-
+		<!-- Modal: Vehicle info end. -->
 	</main>
+
+	<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast">
+		<!-- Inner html content loaded dynamically through script. -->
+	</div>
 </body>
 
 </html>
