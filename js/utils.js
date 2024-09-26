@@ -1,6 +1,8 @@
 function handleLinkActiveState() {
   const links = document.querySelectorAll('.navlink');
 
+  sessionStorage.setItem('activeLink', 'parkings');
+
   links.forEach(el => {
     el.addEventListener('click', ev => {
       links.forEach(el => el.classList.remove('active'));
@@ -25,13 +27,11 @@ function createActionsCell() {
   actionsDiv.classList.add('actions');
 
   const editIcon = document.createElement('i');
-  editIcon.id = 'edit';
-  editIcon.classList.add('action-button', 'fa-regular', 'fa-pen-to-square');
+  editIcon.classList.add('exit', 'action-button', 'fa-solid', 'fa-door-closed');
   actionsDiv.appendChild(editIcon);
 
   const deleteIcon = document.createElement('i');
-  deleteIcon.id = 'delete';
-  deleteIcon.classList.add('action-button', 'fa-solid', 'fa-ban');
+  deleteIcon.classList.add('delete', 'action-button', 'fa-solid', 'fa-ban');
   actionsDiv.appendChild(deleteIcon);
 
   actionsCell.appendChild(actionsDiv);

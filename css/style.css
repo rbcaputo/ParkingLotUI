@@ -7,6 +7,7 @@
 
 .plate-button:hover {
   color: var(--color-primary);
+  cursor: pointer;
 }
 
 .vehicle-info {
