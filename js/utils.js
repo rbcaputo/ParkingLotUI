@@ -1,8 +1,6 @@
 function handleLinkActiveState() {
   const links = document.querySelectorAll('.navlink');
 
-  sessionStorage.setItem('activeLink', 'parkings');
-
   links.forEach(el => {
     el.addEventListener('click', ev => {
       links.forEach(el => el.classList.remove('active'));
@@ -21,19 +19,41 @@ function handleLinkActiveState() {
   }
 }
 
-function createActionsCell() {
+function createParkingActionsCell() {
   const actionsCell = document.createElement('td');
   const actionsDiv = document.createElement('div');
+
   actionsDiv.classList.add('actions');
 
   const editIcon = document.createElement('i');
+
   editIcon.classList.add('exit', 'action-button', 'fa-solid', 'fa-door-closed');
   actionsDiv.appendChild(editIcon);
 
   const deleteIcon = document.createElement('i');
+
   deleteIcon.classList.add('delete', 'action-button', 'fa-solid', 'fa-ban');
   actionsDiv.appendChild(deleteIcon);
+  actionsCell.appendChild(actionsDiv);
 
+  return actionsCell;
+}
+
+function createVehicleActionsCell() {
+  const actionsCell = document.createElement('td');
+  const actionsDiv = document.createElement('div');
+
+  actionsDiv.classList.add('actions');
+
+  const editIcon = document.createElement('i');
+
+  editIcon.classList.add('edit', 'action-button', 'fa-solid', 'fa-pen-to-square');
+  actionsDiv.appendChild(editIcon);
+
+  const deleteIcon = document.createElement('i');
+
+  deleteIcon.classList.add('delete', 'action-button', 'fa-solid', 'fa-ban');
+  deleteIcon.appendChild(deleteIcon);
   actionsCell.appendChild(actionsDiv);
 
   return actionsCell;
@@ -83,13 +103,30 @@ function formatVehicleSize(size) {
   }
 }
 
+function reformatVehicleSize(size) {
+  switch (size.toLowerCase()) {
+    case 'small':
+      return 1;
+
+    case 'medium':
+      return 2;
+
+    case 'large':
+      return 3;
+
+    default:
+      return 0;
+  }
+}
+
 function printToast(message) {
   const toast = document.querySelector('#msg-toast');
-  
   const toastBody = document.querySelector("#toast-body");
+  
   toastBody.textContent = message;
 
   const liveToast = bootstrap.Toast.getOrCreateInstance(toast);
+  
   liveToast.show()
 }
 

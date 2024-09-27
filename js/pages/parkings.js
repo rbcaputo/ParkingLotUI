@@ -3,21 +3,42 @@ async function getAllParkingsAsync() {
     const parkings = await getAllDataAsync('parking');
     const alert = document.querySelector('#alert');
 
-    if (parkings) {
+    if (parkings &&
+        parkings.length > 0) {
       alert.classList.add('invisible');
+
       return parkings;
     }
     else
       alert.classList.remove('invisible');
   }
   catch (er) {
-    console.error('Error while getting parkings:', er.message);
+    console.error('Error while retrieving parkings:', er.message);
+  }
+}
+
+async function getAllParkingsByLicensePlateAsync(licensePlate) {
+  try {
+    const parkings = fetch(`${ENDPOINT}/parking/${licensePlate}`);
+    const alert = document.querySelector('#alert');
+
+    if (parkings) {
+      alert.classList.add('invisible');
+
+      return parkings;
+    }
+    else
+      alert.classList.remove('invisible');
+  }
+  catch (er) {
+    console.error('Error while retrieving parkings:', er.message);
   }
 }
 
 function printVehicle(vehicle) {
   const info = document.querySelector('#vehicle-info');
   const body = document.querySelector('#vehicle-body');
+
   body.innerHTML = '';
 
   const fields = [
@@ -29,23 +50,24 @@ function printVehicle(vehicle) {
   ];
 
   const list = document.createElement('ul');
+
   list.classList.add('list-group', 'list-group-flush');
 
   fields.forEach(el => {
     if (el.key === 'licensePlate') {
       const header = document.createElement('div');
+
       header.classList.add('card-header');
       header.textContent = el.get(vehicle);
-
       body.appendChild(header);
 
       return;
     }
 
     const item = document.createElement('li');
+
     item.classList.add('list-group-item');
     item.textContent = el.get(vehicle);
-
     list.appendChild(item);
   });
 
@@ -56,6 +78,7 @@ function printVehicle(vehicle) {
 async function printAllParkingsAsync(parkings) {
   try {
     const table = document.querySelector('#table');
+
     table.innerHTML = '';
 
     const fields = [
@@ -88,16 +111,16 @@ async function printAllParkingsAsync(parkings) {
         row.appendChild(cell);
       });
 
-      row.appendChild(createActionsCell());
+      row.appendChild(createParkingActionsCell());
       table.appendChild(row);
     });
   }
   catch (er) {
-    console.error('Error while printing parkings:', er.message);
+    console.error('Error while printing parking(s):', er.message);
   }
 }
 
-async function addNewParkingAsync(licensePlate) {
+async function addParkingAsync(licensePlate) {
   try {
     const parking = {
       licensePlate: licensePlate
@@ -117,21 +140,6 @@ async function addNewParkingAsync(licensePlate) {
     console.error('Error while adding new parking:', er.message)
   }
 }
-
-document.querySelector('#submit')
-  .addEventListener('click', async () => {
-    try {
-      const input = document.querySelector('#plate-input');
-      await addNewParkingAsync(input.value.trim());
-
-      input.value = '';
-
-      await printAllParkingsAsync(await getAllParkingsAsync());
-    }
-    catch (er) {
-      console.error('Error while submiting new parking:', er.message);
-    }
-  });
 
 async function updateParkingAsync(licensePlate) {
   try {
@@ -176,6 +184,13 @@ async function removeParkingAsync(licensePlate, entryTime) {
   }
 }
 
+document.querySelector('#search-button')
+  .addEventListener('click', async () => {
+    const licensePlate = document.querySelector('#search-input').value;
+
+    printAllParkingsAsync(await getAllParkingsByLicensePlateAsync(licensePlate));
+  });
+
 document.querySelector('#refresh')
   .addEventListener('click', async () => {
     try {
@@ -186,24 +201,38 @@ document.querySelector('#refresh')
     }
   });
 
+document.querySelector('#submit')
+  .addEventListener('click', async () => {
+    try {
+      const plate = document.querySelector('#plate-input');
+
+      await addParkingAsync(plate.value.trim());
+      plate.value = '';
+      await printAllParkingsAsync(await getAllParkingsAsync());
+    }
+    catch (er) {
+      console.error('Error while submitting new parking:', er.message);
+    }
+  });
+
 document.querySelector('#table')
   .addEventListener('click', async ev => {
-    const element = ev.target;
-    const row = element.closest('tr');
+    const parking = ev.target;
+    const row = parking.closest('tr');
 
     if (!row)
       return
 
-    if (element.classList.contains('plate-button')) {
-      printVehicle(JSON.parse(element.dataset.vehicleInfo));
+    if (parking.classList.contains('plate-button')) {
+      printVehicle(JSON.parse(parking.dataset.vehicleInfo));
 
       return;
     }
 
-    if (element.classList.contains('action-button')) {
-      const licensePlate = row.querySelector('.plate-button').textContent
+    if (parking.classList.contains('action-button')) {
+      const licensePlate = row.querySelector('.plate-button').textContent;
 
-      if (element.classList.contains('exit'))
+      if (parking.classList.contains('exit'))
         try {
           await updateParkingAsync(licensePlate);
         }
@@ -211,7 +240,7 @@ document.querySelector('#table')
           console.error('Error while updating parking:', er.message);
         }
 
-      if (element.classList.contains('delete'))
+      if (parking.classList.contains('delete'))
         try {
           const entryTime = row.querySelector('.entry-time').textContent;
 

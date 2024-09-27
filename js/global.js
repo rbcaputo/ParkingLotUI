@@ -1,9 +1,8 @@
 const ENDPOINT = 'http://localhost:5269';
 
 async function getMenuAsync() {
-  const menu = document.querySelector('#menu');
-
   try {
+    const menu = document.querySelector('#menu');
     const response = await fetch('../html/modules/menu.html');
 
     if (!response.ok)
@@ -19,9 +18,8 @@ async function getMenuAsync() {
 }
 
 async function getToastAsync() {
-  const toast = document.querySelector('#toast');
-
   try {
+    const toast = document.querySelector('#toast');
     const response = await fetch('../html/modules/toast.html');
 
     if (!response.ok)

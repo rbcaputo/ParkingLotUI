@@ -15,9 +15,10 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 
-  <link href="../css/style.css" rel="stylesheet">
+  <link href="../css/pages/vehicles.css" rel="stylesheet">
   <script defer src="../js/global.js"></script>
-	<script defer src="../js/utils.js"></script>
+  <script defer src="../js/utils.js"></script>
+  <script defer src="../js/pages/vehicles.js"></script>
 </head>
 
 <body>
@@ -26,21 +27,59 @@
   </header>
 
   <div class="search">
-    <input type="text" id="search-input">
-    <div class="search-button" id="search-button-parkings">
+    <label for="search-input"> Search </label>
+    <input type="text" class="form-control" id="search-input" placeholder="License plate">
+    <div class="search-button" id="search-button">
       <i class="fa-solid fa-magnifying-glass"></i>
     </div>
   </div>
 
-  <main class="main">
+  <main>
     <div class="control">
       <button class="control-button" id="refresh">
         <i class="fa-solid fa-arrow-rotate-right"></i>
       </button>
-      <button class="control-button" id="add">
-        <i class="fa-solid fa-plus"></i>
+      <button class="control-button add" id="add" data-bs-toggle="modal" data-bs-target="#addModal">
+        <i class="fa-solid fa-car"></i>
       </button>
     </div>
+
+    <!-- Modal: Add new vehicle start. -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addModalLabel"> ADD NEW VEHICLE </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="plate-input" class="form-label"> License Plate </label>
+                <input type="text" class="form-control add-input" id="plate-input">
+                <label for="size-input" class="form-label"> Size </label>
+                <select name="dropdown" class="form-control add-input" id="size-input">
+                  <option value="small"> Small </option>
+                  <option value="medium"> Medium </option>
+                  <option value="large"> Large </option>
+                </select>
+                <label for="brand-input" class="form-label"> Brand </label>
+                <input type="text" class="form-control add-input" id="brand-input">
+                <label for="model-input" class="form-label"> Model </label>
+                <input type="text" class="form-control add-input" id="model-input">
+                <label for="color-input" class="form-label"> Color </label>
+                <input type="text" class="form-control add-input" id="color-input">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Close </button>
+            <button type="submit" class="btn btn-primary" id="submit"> Save </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal: Add new vehicle end. -->
 
     <table class="table table-striped table-hover">
       <thead>
@@ -53,16 +92,19 @@
           <th scope="col"> Actions </th>
         </tr>
       </thead>
-      <tbody class="table-group-divider" id="table">
+      <tbody id="table" class="table-group-divider">
         <!-- Inner html content loaded dynamically through script. -->
       </tbody>
     </table>
 
     <div class="table-alert invisible alert alert-warning" id="alert" role="alert">
-      There are no vehicle entries registered.
+      There are no parking entries registered.
     </div>
-
   </main>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast">
+    <!-- Inner html content loaded dynamically through script. -->
+  </div>
 </body>
 
 </html>
