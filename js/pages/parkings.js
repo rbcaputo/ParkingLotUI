@@ -4,33 +4,38 @@ async function getAllParkingsAsync() {
     const alert = document.querySelector('#alert');
 
     if (parkings &&
-        parkings.length > 0) {
+      parkings.length > 0) {
       alert.classList.add('invisible');
 
       return parkings;
     }
-    else
-      alert.classList.remove('invisible');
-  }
-  catch (er) {
+
+    alert.classList.remove('invisible');
+  } catch (er) {
     console.error('Error while retrieving parkings:', er.message);
   }
 }
 
 async function getAllParkingsByLicensePlateAsync(licensePlate) {
   try {
-    const parkings = fetch(`${ENDPOINT}/parking/${licensePlate}`);
+    const response = await fetch(`${ENDPOINT}/vehicle/licensePlate/${licensePlate}`);
+
+    if (!response.ok)
+      printToast(await response.text());
+
+    const vehicle = await response.json();
+    const parkings = vehicle.parkings;
     const alert = document.querySelector('#alert');
 
-    if (parkings) {
+    if (parkings &&
+      parkings.length > 0) {
       alert.classList.add('invisible');
 
       return parkings;
     }
-    else
-      alert.classList.remove('invisible');
-  }
-  catch (er) {
+
+    alert.classList.remove('invisible');
+  } catch (er) {
     console.error('Error while retrieving parkings:', er.message);
   }
 }
@@ -75,14 +80,21 @@ function printVehicle(vehicle) {
   info.appendChild(body);
 }
 
-async function printAllParkingsAsync(parkings) {
+function printAllParkings(parkings) {
   try {
     const table = document.querySelector('#table');
 
     table.innerHTML = '';
 
     const fields = [
-      { key: 'licensePlate', get: el => formatLicensePlate(el.vehicle.licensePlate) },
+      {
+        key: 'licensePlate', get: el => {
+          if (el.vehicle)
+            return formatLicensePlate(el.vehicle.licensePlate);
+          else
+            return formatLicensePlate(el.licensePlate);
+        }
+      },
       { key: 'originalEntryTime', get: el => el.entryTime },
       { key: 'entryTime', get: el => formatDateTime(el.entryTime) },
       { key: 'exitTime', get: el => formatDateTime(el.exitTime) },
@@ -114,50 +126,39 @@ async function printAllParkingsAsync(parkings) {
       row.appendChild(createParkingActionsCell());
       table.appendChild(row);
     });
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while printing parking(s):', er.message);
   }
 }
 
 async function addParkingAsync(licensePlate) {
   try {
-    const parking = {
-      licensePlate: licensePlate
-    }
-
     const response = await fetch(`${ENDPOINT}/parking`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(parking)
+      body: JSON.stringify(licensePlate)
     });
 
     printToast(await response.text());
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while adding new parking:', er.message)
   }
 }
 
 async function updateParkingAsync(licensePlate) {
   try {
-    const parking = {
-      licensePlate: licensePlate
-    };
-
     const response = await fetch(`${ENDPOINT}/parking`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(parking)
+      body: JSON.stringify(licensePlate)
     });
 
     printToast(await response.text());
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while updating parking:', er.message);
   }
 }
@@ -178,25 +179,31 @@ async function removeParkingAsync(licensePlate, entryTime) {
     });
 
     printToast(await response.text());
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while removing parking', er.message);
   }
 }
 
-document.querySelector('#search-button')
+document.querySelector('#search')
   .addEventListener('click', async () => {
-    const licensePlate = document.querySelector('#search-input').value;
+    try {
+      const data = await getAllParkingsAsync();
+      const query = document.querySelector('#search-input').value
+        .replace(/[^A-Z0-9]g/, '')
+        .toUpperCase();
+      const parkings = data.filter(el => el.vehicle.licensePlate === query);
 
-    printAllParkingsAsync(await getAllParkingsByLicensePlateAsync(licensePlate));
+      printAllParkings(parkings);
+    } catch (er) {
+      console.error('Error while searching parkings:', er.message);
+    }
   });
 
 document.querySelector('#refresh')
   .addEventListener('click', async () => {
     try {
-      await printAllParkingsAsync(await getAllParkingsAsync());
-    }
-    catch (er) {
+      printAllParkings(await getAllParkingsAsync());
+    } catch (er) {
       console.error('Error while refreshing parkings:', er.message);
     }
   });
@@ -208,10 +215,9 @@ document.querySelector('#submit')
 
       await addParkingAsync(plate.value.trim());
       plate.value = '';
-      await printAllParkingsAsync(await getAllParkingsAsync());
-    }
-    catch (er) {
-      console.error('Error while submitting new parking:', er.message);
+      printAllParkings(await getAllParkingsAsync());
+    } catch (er) {
+      console.error('Error while adding parking:', er.message);
     }
   });
 
@@ -219,9 +225,6 @@ document.querySelector('#table')
   .addEventListener('click', async ev => {
     const parking = ev.target;
     const row = parking.closest('tr');
-
-    if (!row)
-      return
 
     if (parking.classList.contains('plate-button')) {
       printVehicle(JSON.parse(parking.dataset.vehicleInfo));
@@ -235,8 +238,7 @@ document.querySelector('#table')
       if (parking.classList.contains('exit'))
         try {
           await updateParkingAsync(licensePlate);
-        }
-        catch (er) {
+        } catch (er) {
           console.error('Error while updating parking:', er.message);
         }
 
@@ -245,23 +247,18 @@ document.querySelector('#table')
           const entryTime = row.querySelector('.entry-time').textContent;
 
           await removeParkingAsync(licensePlate, entryTime);
-        }
-        catch (er) {
+        } catch (er) {
           console.error('Error while removing parking:', er.message);
         }
 
-      await printAllParkingsAsync(await getAllParkingsAsync());
+      printAllParkings(await getAllParkingsAsync());
     }
   });
 
 (async function init() {
   try {
-    const parkings = await getAllParkingsAsync();
-
-    if (parkings)
-      await printAllParkingsAsync(parkings);
-  }
-  catch (er) {
-    console.log('Error while loading parkings data:', er.message);
+    printAllParkings(await getAllParkingsAsync());
+  } catch (er) {
+    console.log('Error while loading parkings:', er.message);
   }
 })();

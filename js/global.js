@@ -11,8 +11,7 @@ async function getMenuAsync() {
     menu.innerHTML = await response.text();
 
     handleLinkActiveState();
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while retrieving menu module:', er.message);
   }
 }
@@ -26,8 +25,7 @@ async function getToastAsync() {
       throw new Error(`Http error: status ${response.status}.`);
 
     toast.innerHTML = await response.text();
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while retrieving toast module:', er.message);
   }
 }
@@ -40,8 +38,16 @@ async function getAllDataAsync(resource) {
       throw new Error(`Http error: status ${response.status}.`);
 
     return await response.json();
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while retrieving data:', er.message);
   }
 }
+
+(async function init() {
+  try {
+    await getMenuAsync();
+    await getToastAsync();
+  } catch {
+    console.error('Error while loading modules:', er.message);
+  }
+})();

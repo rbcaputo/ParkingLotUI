@@ -29,7 +29,7 @@
   <div class="search">
     <label for="search-input"> Search </label>
     <input type="text" class="form-control" id="search-input" placeholder="License plate">
-    <div class="search-button" id="search-button">
+    <div class="search-button" id="search">
       <i class="fa-solid fa-magnifying-glass"></i>
     </div>
   </div>
@@ -49,7 +49,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="addModalLabel"> ADD NEW VEHICLE </h1>
+            <h1 class="modal-title fs-5" id="addModalLabel"> ADD/UPDATE VEHICLE </h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -59,9 +59,9 @@
                 <input type="text" class="form-control add-input" id="plate-input">
                 <label for="size-input" class="form-label"> Size </label>
                 <select name="dropdown" class="form-control add-input" id="size-input">
-                  <option value="small"> Small </option>
-                  <option value="medium"> Medium </option>
-                  <option value="large"> Large </option>
+                  <option value="1"> Small </option>
+                  <option value="2"> Medium </option>
+                  <option value="3"> Large </option>
                 </select>
                 <label for="brand-input" class="form-label"> Brand </label>
                 <input type="text" class="form-control add-input" id="brand-input">
@@ -89,6 +89,7 @@
           <th scope="col"> Brand </th>
           <th scope="col"> Model </th>
           <th scope="col"> Color </th>
+          <th scope="col"> Parked? </th>
           <th scope="col"> Actions </th>
         </tr>
       </thead>

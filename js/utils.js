@@ -39,7 +39,7 @@ function createParkingActionsCell() {
   return actionsCell;
 }
 
-function createVehicleActionsCell() {
+function createActionsCell() {
   const actionsCell = document.createElement('td');
   const actionsDiv = document.createElement('div');
 
@@ -48,12 +48,14 @@ function createVehicleActionsCell() {
   const editIcon = document.createElement('i');
 
   editIcon.classList.add('edit', 'action-button', 'fa-solid', 'fa-pen-to-square');
+  editIcon.setAttribute('data-bs-toggle', 'modal');
+  editIcon.setAttribute('data-bs-target', '#addModal');
   actionsDiv.appendChild(editIcon);
 
   const deleteIcon = document.createElement('i');
 
   deleteIcon.classList.add('delete', 'action-button', 'fa-solid', 'fa-ban');
-  deleteIcon.appendChild(deleteIcon);
+  actionsDiv.appendChild(deleteIcon);
   actionsCell.appendChild(actionsDiv);
 
   return actionsCell;
@@ -91,7 +93,7 @@ function formatVehicleSize(size) {
   switch (size) {
     case 1:
       return 'Small';
-    
+
     case 2:
       return 'Medium';
 
@@ -103,34 +105,29 @@ function formatVehicleSize(size) {
   }
 }
 
-function reformatVehicleSize(size) {
-  switch (size.toLowerCase()) {
-    case 'small':
-      return 1;
-
-    case 'medium':
-      return 2;
-
-    case 'large':
-      return 3;
-
-    default:
-      return 0;
-  }
+function formatIsParked(isParked) {
+  return isParked
+    ? 'Yes'
+    : 'No';
 }
 
 function printToast(message) {
   const toast = document.querySelector('#msg-toast');
   const toastBody = document.querySelector("#toast-body");
-  
+
   toastBody.textContent = message;
 
   const liveToast = bootstrap.Toast.getOrCreateInstance(toast);
-  
+
   liveToast.show()
 }
 
-(async function init() {
-  await getMenuAsync();
-  await getToastAsync();
-})();
+function selectVehicleFormFields() {
+  return [
+    { key: 'licensePlate', element: document.querySelector('#plate-input') },
+    { key: 'size', element: document.querySelector('#size-input') },
+    { key: 'brand', element: document.querySelector('#brand-input') },
+    { key: 'model', element: document.querySelector('#model-input') },
+    { key: 'color', element: document.querySelector('#color-input') }
+  ];
+}

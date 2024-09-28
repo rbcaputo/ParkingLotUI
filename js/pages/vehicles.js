@@ -4,20 +4,19 @@ async function getAllVehiclesAsync() {
     const alert = document.querySelector('#alert');
 
     if (vehicles &&
-        vehicles.length > 0) {
+      vehicles.length > 0) {
       alert.classList.add('invisible');
 
       return vehicles;
     }
-    else
-      alert.classList.remove('invisible');
-  }
-  catch (er) {
+
+    alert.classList.remove('invisible');
+  } catch (er) {
     console.error('Error while retrieving vehicles:', er.message);
   }
 }
 
-async function printAllVehiclesAsync(vehicles) {
+function printAllVehicles(vehicles) {
   try {
     const table = document.querySelector('#table');
 
@@ -28,7 +27,8 @@ async function printAllVehiclesAsync(vehicles) {
       { key: 'size', get: el => formatVehicleSize(el.size) },
       { key: 'brand', get: el => el.brand },
       { key: 'model', get: el => el.model },
-      { key: 'color', get: el => el.color }
+      { key: 'color', get: el => el.color },
+      { key: 'isParked', get: el => formatIsParked(el.isParked) }
     ];
 
     vehicles.forEach(el => {
@@ -46,11 +46,10 @@ async function printAllVehiclesAsync(vehicles) {
         row.appendChild(cell);
       });
 
-      row.appendChild(createVehicleActionsCell());
+      row.appendChild(createActionsCell());
       table.appendChild(row);
     });
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while printing vehicle(s):', er.message);
   }
 }
@@ -62,14 +61,13 @@ async function getVehicleByLicensePlateAsync(licensePlate) {
 
     if (response.ok) {
       alert.classList.add('invisible');
-      printAllVehiclesAsync(await response.json());
+      printAllVehicles(await response.json());
     }
     else {
       alert.classList.remove('invisible');
       printToast(await response.text());
     }
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while retrieving vehicle:', er.message);
   }
 }
@@ -78,7 +76,7 @@ async function addVehicleAsync(vehicle) {
   try {
     const vehicleDto = {
       licensePlate: vehicle.licensePlate,
-      size: vehicle.size,
+      size: parseInt(vehicle.size),
       brand: vehicle.brand,
       model: vehicle.model,
       color: vehicle.color
@@ -93,8 +91,7 @@ async function addVehicleAsync(vehicle) {
     });
 
     printToast(await response.text());
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while adding new vehicle:', er.message);
   }
 }
@@ -103,7 +100,7 @@ async function updateVehicleAsync(vehicle) {
   try {
     const vehicleDto = {
       licensePlate: vehicle.licensePlate,
-      size: vehicle.size,
+      size: parseInt(vehicle.size),
       brand: vehicle.brand,
       model: vehicle.model,
       color: vehicle.color
@@ -118,106 +115,132 @@ async function updateVehicleAsync(vehicle) {
     });
 
     printToast(await response.text());
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while updating vehicle:', er.message);
   }
 }
 
 async function removeVehicleAsync(licensePlate) {
-
   try {
     const response = await fetch(`${ENDPOINT}/vehicle`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/json'
       },
-      body: licensePlate
+      body: JSON.stringify(licensePlate)
     });
 
     printToast(await response.text());
-  }
-  catch (er) {
+  } catch (er) {
     console.error('Error while removing vehicle', er.message);
   }
 }
 
-document.querySelector('#search-button')
-  .addEventListener('click', async () => {
-    const licensePlate = document.querySelector('#search-input').value;
+const submit = document.querySelector('#submit');
+let isEdit;
 
-    printAllVehiclesAsync(await getVehicleByLicensePlateAsync(licensePlate));
+async function handleSubmit(ev) {
+  ev.preventDefault();
+
+  try {
+    const fields = selectVehicleFormFields();
+    const vehicle = {};
+
+    fields.forEach(({ key, element }) => {
+      vehicle[key] = key === 'size'
+        ? parseInt(element.value)
+        : element.value.trim();
+    });
+
+    isEdit
+      ? await updateVehicleAsync(vehicle)
+      : await addVehicleAsync(vehicle);
+
+    fields.forEach(({ element }) => element.value = '');
+    printAllVehicles(await getAllVehiclesAsync());
+  } catch (er) {
+    console.error(`Error while ${isEdit ? 'updating' : 'adding'} vehicle:`, er.message);
+  }
+}
+
+document.querySelector('#search')
+  .addEventListener('click', async () => {
+    try {
+      const data = await getAllVehiclesAsync();
+      const query = document.querySelector('#search-input').value
+        .replace(/[^A-Z0-9]g/, '')
+        .toUpperCase();
+      const vehicle = data.filter(el => el.licensePlate === query);
+
+      printAllVehicles(vehicle);
+    } catch (er) {
+      console.error('Error while searching parkings:', er.message);
+    }
   });
 
 document.querySelector('#refresh')
   .addEventListener('click', async () => {
     try {
-      await printAllVehiclesAsync(await getAllVehiclesAsync());
-    }
-    catch (er) {
+      printAllVehicles(await getAllVehiclesAsync());
+    } catch (er) {
       console.error('Error while refreshing parkings:', er.message);
     }
   });
 
-document.querySelector('#submit')
-  .addEventListener('click', async () => {
-    try {
-      const plate = document.querySelector('#plate-input');
-      const size = document.querySelector('#size-input');
-      const brand = document.querySelector('#brand-input');
-      const model = document.querySelector('#model-input');
-      const color = document.querySelector('#color-input');
+document.querySelector('#add')
+  .addEventListener('click', () => {
+    const fields = selectVehicleFormFields();
 
-      const vehicle = {
-        licensePlate: plate.value.trim(),
-        size: size.value.trim(),
-        brand: brand.value.trim(),
-        model: model.value.trim(),
-        color: color.value.trim()
-      }
-
-      await addVehicleAsync(vehicle);
-      plate.value = '';
-      size.value = '';
-      brand.value = '';
-      model.value = '';
-      color.value = '';
-      await printAllVehiclesAsync(await getAllVehiclesAsync());
-    }
-    catch (er) {
-      console.error('Error while submitting new vehicle:', er.message);
-    }
+    fields.forEach(({ element }) => element.value = '');
+    isEdit = false;
   });
 
-// document.querySelector('#table')
-//   .addEventListener('click', async ev => {
-//     const baseVehicle = ev.target;
-//     const row = baseVehicle.closest('tr');
+document.querySelector('#table').addEventListener('click', async ev => {
+  const target = ev.target;
+  const row = target.closest('tr');
 
-//     if (!row)
-//       return
+  if (target.classList.contains('action-button')) {
+    const vehicleInfoData = row.querySelector('.plate').dataset.vehicleInfo;
+    const vehicleInfo = JSON.parse(vehicleInfoData);
 
-//     if (baseVehicle.classList.contains('action-button')) {
-//       const vehicle = JSON.parse(row.querySelector('.plate').baseVehicle.dataset.vehicleInfo);
+    isEdit = target.classList.contains('edit');
 
-//       if (baseVehicle.classList.contains('edit'))
-//         try {
-//           await updateVehicleAsync(vehicle);
-//         }
-//         catch (er) {
-//           console.error('Error while updating vehicle:', er.message);
-//         }
+    try {
+      const fields = selectVehicleFormFields();
 
-//       if (baseVehicle.classList.contains('delete'))
-//         try {
-//           const licensePlate = row.querySelector('.plate').textContent;
+      if (isEdit) {
+        fields.forEach(({ key, element }) => {
+          if (vehicleInfo.hasOwnProperty(key)) {
+            element.value = key === 'size'
+              ? parseInt(vehicleInfo[key])
+              : vehicleInfo[key];
+          }
+        });
+      }
 
-//           await removeVehicleAsync(licensePlate);
-//         }
-//         catch (er) {
-//           console.error('Error while removing vehicle:', er.message);
-//         }
+      submit.removeEventListener('click', handleSubmit);
+      submit.addEventListener('click', handleSubmit);
 
-//       await printAllVehiclesAsync(await getAllVehiclesAsync());
-//     }
-//   });
+      if (target.classList.contains('delete')) {
+        const licensePlate = row.querySelector('.plate').textContent;
+
+        try {
+          await removeVehicleAsync(licensePlate);
+          printAllVehicles(await getAllVehiclesAsync());
+        } catch (er) {
+          console.error('Error while removing vehicle:', er.message);
+        }
+      }
+    } catch (er) {
+      console.error('Error while serializing form:', er.message);
+    }
+  }
+});
+
+(async function init() {
+  try {
+    printAllVehicles(await getAllVehiclesAsync());
+  } catch (er) {
+    console.error('Error while loading vehicles:', er.message);
+  }
+})();
