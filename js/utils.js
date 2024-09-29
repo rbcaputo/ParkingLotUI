@@ -65,7 +65,7 @@ function formatLicensePlate(licensePlate) {
   return licensePlate.slice(0, 3) + '-' + licensePlate.slice(3);
 }
 
-function formatDateTime(dateTime) {
+function formatParkingDateTime(dateTime) {
   const date = new Date(dateTime);
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -75,6 +75,28 @@ function formatDateTime(dateTime) {
   return dateTime === null
     ? '--'
     : `${month}/${day}/${year} ${time}`;
+}
+
+function formatFareDateTime(dateTime) {
+  const date = new Date(dateTime);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  return dateTime == null
+    ? '--'
+    : `${month}/${day}/${year}`;
+}
+
+function reformatFareDateTime(dateTime) {
+  if (dateTime === '')
+    return null;
+
+  const [month, day, year] = dateTime.split('/')
+    .map(Number);
+  const date = new Date(year, month - 1, day);
+
+  return date.toISOString().split('.')[0];
 }
 
 function formatDuration(duration) {
@@ -105,8 +127,8 @@ function formatVehicleSize(size) {
   }
 }
 
-function formatIsParked(isParked) {
-  return isParked
+function formatBoolValue(bool) {
+  return bool
     ? 'Yes'
     : 'No';
 }
@@ -129,5 +151,13 @@ function selectVehicleFormFields() {
     { key: 'brand', element: document.querySelector('#brand-input') },
     { key: 'model', element: document.querySelector('#model-input') },
     { key: 'color', element: document.querySelector('#color-input') }
+  ];
+}
+
+function selectFareFormFields() {
+  return [
+    { key: 'startDate', element: document.querySelector('#start-input') },
+    { key: 'endDate', element: document.querySelector('#end-input') },
+    { key: 'pricePerHour', element: document.querySelector('#price-input') }
   ];
 }

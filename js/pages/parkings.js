@@ -3,32 +3,7 @@ async function getAllParkingsAsync() {
     const parkings = await getAllDataAsync('parking');
     const alert = document.querySelector('#alert');
 
-    if (parkings &&
-      parkings.length > 0) {
-      alert.classList.add('invisible');
-
-      return parkings;
-    }
-
-    alert.classList.remove('invisible');
-  } catch (er) {
-    console.error('Error while retrieving parkings:', er.message);
-  }
-}
-
-async function getAllParkingsByLicensePlateAsync(licensePlate) {
-  try {
-    const response = await fetch(`${ENDPOINT}/vehicle/licensePlate/${licensePlate}`);
-
-    if (!response.ok)
-      printToast(await response.text());
-
-    const vehicle = await response.json();
-    const parkings = vehicle.parkings;
-    const alert = document.querySelector('#alert');
-
-    if (parkings &&
-      parkings.length > 0) {
+    if (parkings && parkings.length > 0) {
       alert.classList.add('invisible');
 
       return parkings;
@@ -81,54 +56,49 @@ function printVehicle(vehicle) {
 }
 
 function printAllParkings(parkings) {
-  try {
-    const table = document.querySelector('#table');
+  const table = document.querySelector('#table');
 
-    table.innerHTML = '';
+  table.innerHTML = '';
 
-    const fields = [
-      {
-        key: 'licensePlate', get: el => {
-          if (el.vehicle)
-            return formatLicensePlate(el.vehicle.licensePlate);
-          else
-            return formatLicensePlate(el.licensePlate);
-        }
-      },
-      { key: 'originalEntryTime', get: el => el.entryTime },
-      { key: 'entryTime', get: el => formatDateTime(el.entryTime) },
-      { key: 'exitTime', get: el => formatDateTime(el.exitTime) },
-      { key: 'duration', get: el => formatDuration(el.duration) },
-      { key: 'totalPrice', get: el => formatTotalPrice(el.totalPrice) }
-    ];
+  const fields = [
+    {
+      key: 'licensePlate', get: el => {
+        if (el.vehicle)
+          return formatLicensePlate(el.vehicle.licensePlate);
+        else
+          return formatLicensePlate(el.licensePlate);
+      }
+    },
+    { key: 'originalEntryTime', get: el => el.entryTime },
+    { key: 'entryTime', get: el => formatParkingDateTime(el.entryTime) },
+    { key: 'exitTime', get: el => formatParkingDateTime(el.exitTime) },
+    { key: 'duration', get: el => formatDuration(el.duration) },
+    { key: 'totalPrice', get: el => formatTotalPrice(el.totalPrice) }
+  ];
 
-    parkings.forEach(el => {
-      const row = document.createElement('tr');
+  parkings.forEach(el => {
+    const row = document.createElement('tr');
 
-      fields.forEach(field => {
-        const cell = document.createElement('td');
+    fields.forEach(field => {
+      const cell = document.createElement('td');
 
-        if (field.key === 'licensePlate') {
-          cell.classList.add('plate-button');
-          cell.setAttribute('data-bs-toggle', 'modal');
-          cell.setAttribute('data-bs-target', '#infoModal');
-          cell.dataset.vehicleInfo = JSON.stringify(el.vehicle);
-        }
+      if (field.key === 'licensePlate') {
+        cell.classList.add('plate-button');
+        cell.setAttribute('data-bs-toggle', 'modal');
+        cell.setAttribute('data-bs-target', '#infoModal');
+        cell.dataset.vehicleInfo = JSON.stringify(el.vehicle);
+      }
 
-        if (field.key === 'originalEntryTime') {
-          cell.classList.add('entry-time', 'invisible');
-        }
+      if (field.key === 'originalEntryTime')
+        cell.classList.add('entry-time', 'invisible');
 
-        cell.textContent = field.get(el);
-        row.appendChild(cell);
-      });
-
-      row.appendChild(createParkingActionsCell());
-      table.appendChild(row);
+      cell.textContent = field.get(el);
+      row.appendChild(cell);
     });
-  } catch (er) {
-    console.error('Error while printing parking(s):', er.message);
-  }
+
+    row.appendChild(createParkingActionsCell());
+    table.appendChild(row);
+  });
 }
 
 async function addParkingAsync(licensePlate) {
@@ -190,6 +160,7 @@ document.querySelector('#search')
       const data = await getAllParkingsAsync();
       const query = document.querySelector('#search-input').value
         .replace(/[^A-Z0-9]g/, '')
+        .trim()
         .toUpperCase();
       const parkings = data.filter(el => el.vehicle.licensePlate === query);
 

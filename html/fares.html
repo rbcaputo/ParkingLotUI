@@ -28,7 +28,7 @@
 
   <div class="search">
     <label for="search-input"> Search </label>
-    <input type="text" class="form-control" id="search-input" placeholder="Price per Hour">
+    <input type="text" class="form-control" id="search-input" placeholder="00.00">
     <div class="search-button" id="search">
       <i class="fa-solid fa-magnifying-glass"></i>
     </div>
@@ -44,7 +44,7 @@
       </button>
     </div>
 
-    <!-- Modal: Add new fare start. -->
+    <!-- Modal: Add/edit fare start. -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -56,9 +56,9 @@
             <form>
               <div class="mb-3">
                 <label for="start-input" class="form-label"> Start Date </label>
-                <input type="text" id="start-input" class="form-control add-input">
+                <input type="text" id="start-input" class="form-control add-input" placeholder="mm/dd/yyyy">
                 <label for="end-input" class="form-label"> End Date </label>
-                <input type="text" id="end-input" class="form-control add-input">
+                <input type="text" id="end-input" class="form-control add-input" placeholder="mm/dd/yyyy">
                 <label for="price-input" class="form-label"> Price per Hour </label>
                 <input type="text" id="price-input" class="form-control add-input" placeholder="00.00">
               </div>
@@ -71,7 +71,7 @@
         </div>
       </div>
     </div>
-    <!-- Modal: Add new faren end. -->
+    <!-- Modal: Add/edit fare end. -->
 
     <table class="table table-striped table-hover">
       <thead>
