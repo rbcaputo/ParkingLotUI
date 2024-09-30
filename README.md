@@ -4,7 +4,7 @@ __Disclaimer__ <br>
 This is ultimately an unfinished project, it is intented to be presented as an MVP.
 
 ## Introduction
-ParkingLotUI is a web based interface which goal is to serve as the interaction tool between the user and ParkingLotAPI. It encompasses all CRUD basic operations and adheres to most SOLID principles.
+ParkingLotUI is a web based interface which goal is to serve as the interaction toolset between the user and ParkingLotAPI. It encompasses all CRUD basic operations and adheres to most SOLID principles.
 The application is currently in MVP stage. There are improvements to be made and features to consider, depending on the complexity of the business rules.
 
 Further development of this application can largely benefit from the introduction of better validation and exception handling. The management of different user access levels can also be implemented through JWT and proper routing.
